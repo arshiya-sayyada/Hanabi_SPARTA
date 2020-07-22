@@ -21,6 +21,7 @@
 #define HANABI_SERVER_ASSERT(x, msg) do { if (!(x)) throw ServerError(msg); } while (0)
 #endif
 
+
 namespace Params {
 
 std::string getParameterString(const std::string &name, std::string default_val, const std::string help) {

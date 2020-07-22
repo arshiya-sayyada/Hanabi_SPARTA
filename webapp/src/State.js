@@ -47,6 +47,8 @@ function convertCard(card) {
 }
 
 function convertState(schema) {
+  console.log("This is schema : ", schema);
+  schema.otherBots = [];
   if (!schema.isConnected) return {};
   return {
     isPlayerTurn: schema.isPlayerTurn,
