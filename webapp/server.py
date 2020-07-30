@@ -12,6 +12,9 @@ from quart import Quart, websocket, Response
 import json
 import sys
 import os
+from gameState import convertGameState
+from action import convertAction
+from random import randint
 
 from hanabi_lib import start_game, end_game, Move, MoveType, Color, get_botname, get_search_thresh, set_search_thresh
 
@@ -80,93 +83,6 @@ def formatMove(move, for_player_id, my_player_id):
     else:
         return str(move)
 
-def convertGameState(state):
-    color_dict = [ Color(i).name for i in range(5) ]
-    #print(f"Colors are {color_dict}")
-    
-    obs_dict = {}
-    obs_dict["current_player"] = 1
-    if state["isPlayerTurn"] == True:
-        obs_dict["current_player_offset"] = 0
-    else:
-        obs_dict["current_player_offset"] = 1
-    obs_dict["life_tokens"] = state["mulligansRemaining"]
-    obs_dict["information_tokens"] = state["hintStonesRemaining"]
-    obs_dict["num_players"] = 2
-    obs_dict["deck_size"] = state["cardsRemainingInDeck"]
-
-    #SPARTA has Orange instead of white so we use these colors interchangeably
-    color_map_dict = {'R':0,'Y':2,'G':3,'W':1,'B':4}
-    obs_dict["fireworks"] = {}
-    for color in color_map_dict.keys():
-        obs_dict["fireworks"][color] = state["piles"][color_map_dict[color]]
-
-    obs_dict["legal_moves"] = []
-    #add condition for when discard is legal-> If hits < max_hints (8) : all discard moves are legal
-    for move in range(5):
-        action = {}
-        action["action_type"] = 'DISCARD'
-        action["card_index"] = move
-        obs_dict["legal_moves"].append(action)
-    #play is always legal
-    for move in range(5):
-        action = {}
-        action["action_type"] = 'PLAY'
-        action["card_index"] = move
-        obs_dict["legal_moves"].append(action)
-    
-        
-    obs_dict["legal_moves_as_int"] = []
-    #for move in observation.legal_moves():
-    #  obs_dict["legal_moves"].append(move.to_dict())
-    #  obs_dict["legal_moves_as_int"].append(self.game.get_move_uid(move))
-
-    obs_dict["observed_hands"] = []
-    player_hand_dict = []
-    for player_hand in state["cards"]:
-        cards = {}
-        cards["color"] = None
-        cards["rank"] = -1
-        player_hand_dict.append(cards)
-    obs_dict["observed_hands"].append(player_hand_dict)
-    player_hand_dict = []
-    for player_hand in state["cards"]:
-        #cards = [card.to_dict() for card in player_hand]
-        cards = {}
-        card_split = list(player_hand)
-        cards["color"] = card_split[1]
-        cards["color"] = cards["color"].upper()
-        cards["rank"] = card_split[0]
-        player_hand_dict.append(cards)
-    obs_dict["observed_hands"].append(player_hand_dict)
-    
-    obs_dict["discard_pile"] = []
-    for card in state["discards"]:
-        cards = {}
-        card_split = list(card)
-        cards["color"] = card_split[1]
-        cards["color"] = cards["color"].upper()
-        cards["rank"] = card_split[0]
-        obs_dict["discard_pile"].append(cards)
-        
-    # Return hints received.
-    obs_dict["card_knowledge"] = []
-    #for player_hints in observation.card_knowledge():
-    #  player_hints_as_dicts = []
-    #  for hint in player_hints:
-    #    hint_d = {}
-    #    if hint.color() is not None:
-    #      hint_d["color"] = pyhanabi.color_idx_to_char(hint.color())
-    #    else:
-    #      hint_d["color"] = None
-     #   hint_d["rank"] = hint.rank()
-     #   player_hints_as_dicts.append(hint_d)
-    #  obs_dict["card_knowledge"].append(player_hints_as_dicts)
-
-    #obs_dict["vectorized"] = self.observation_encoder.encode(observation)
-    #obs_dict["pyhanabi"] = observation
-    print(f"Converted State: {obs_dict}")
-    return obs_dict
 
 @app.route('/')
 def index():
@@ -241,9 +157,8 @@ async def ws():
 
         await websocket.send(json.dumps(state))
 
-        print(f"Old State: {state}")
-        a = convertGameState(state)
-        
+        #print(f"Old State: {state}")
+        print(f"Converted State: {convertGameState(state)}")        
 
         if not server.activePlayer() == myNumber and not server.gameOver():
             bot.wait()
@@ -256,7 +171,9 @@ async def ws():
             action = await websocket.receive()
         tokens = action.split(" ")
         print(f"{LOG_PREFIX} ACTION: {action}")
-
+        #testing 
+        #print(f"Random Converted Action: {convertAction(randint(0, 19))}")
+        
         try:
             if not bot.ready:
                 print(f"Ignoring move {MoveType} because bot not ready.")
