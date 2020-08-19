@@ -121,19 +121,16 @@ def convertGameState(state):
     #check and knowledge from predictions
     obs_dict["card_knowledge"] = []
     obs_dict["complete_card_knowledge"] = []
-    player_hand_dict = []
-    for player_hand in state["cards"]:
-        cards = {}
-        cards["color"] = None
-        cards["rank"] = None
-        player_hand_dict.append(cards)
-    obs_dict["card_knowledge"].append(player_hand_dict)
-    player_hand_dict = []
+    player_0_dict = []
+    player_1_dict = []
+    string_dict_0 = []
+    string_dict_1 = []
     predict_array = state["predictions"]
     #print(f"predictions: {predict_array[1]}")
-    our_array = predict_array[1]
-    for player_hand in our_array:
-        str_cck=""
+    human_array = predict_array[0]
+    bot_array = predict_array[1]
+    for player_hand in human_array:
+        str_cck_1=""
         predict_color = []
         predict_number = []
         red = player_hand[0:5]
@@ -193,13 +190,88 @@ def convertGameState(state):
             cards["rank"] = predict_number[0]
         else:
             cards["rank"] = None                                     
-        player_hand_dict.append(cards)
-        str_cck = str_cck.join(predict_color)
+        player_1_dict.append(cards)
+        str_cck_1 = str_cck_1.join(predict_color)
         for digit in predict_number:
-            str_cck += str(digit+1)
-        obs_dict["complete_card_knowledge"].append(str_cck)
-    obs_dict["card_knowledge"].append(player_hand_dict)
-
+            str_cck_1 += str(digit+1)
+        string_dict_1.append(str_cck_1)
+    for player_hand in bot_array:
+        str_cck_0=""
+        predict_color = []
+        predict_number = []
+        red = player_hand[0:5]
+        white = player_hand[5:10]
+        yellow = player_hand[10:15]
+        green = player_hand[15:20]
+        blue = player_hand[20:]
+        
+        for x in red:
+            if x==1:
+                predict_color.append('R')
+                break
+        for x in yellow:
+            if x==1:
+                predict_color.append('Y')
+                break
+        for x in green:
+            if x==1:
+                predict_color.append('G')
+                break
+        for x in white:
+            if x==1:
+                predict_color.append('W')
+                break
+        for x in blue:
+            if x==1:
+                predict_color.append('B')
+                break
+        
+        for x in player_hand[0::5]:
+            if x==1:
+                predict_number.append(0)
+                break
+        for x in player_hand[1::5]:
+            if x==1:
+                predict_number.append(1)
+                break
+        for x in player_hand[2::5]:
+            if x==1:
+                predict_number.append(2)
+                break
+        for x in player_hand[3::5]:
+            if x==1:
+                predict_number.append(3)
+                break
+        for x in player_hand[4::5]:
+            if x==1:
+                predict_number.append(4)
+                break
+        cards = {}
+        if len(predict_color)==1:
+            cards["color"] = predict_color[0]
+        else:
+            cards["color"] = None
+        
+        if len(predict_number)==1:
+            cards["rank"] = predict_number[0]
+        else:
+            cards["rank"] = None                                     
+        player_0_dict.append(cards)
+        str_cck_0 = str_cck_0.join(predict_color)
+        for digit in predict_number:
+            str_cck_0 += str(digit+1)
+        string_dict_0.append(str_cck_0)
+    if state["isPlayerTurn"] == True:
+        obs_dict["card_knowledge"].append(player_1_dict)
+        obs_dict["card_knowledge"].append(player_0_dict)
+        obs_dict["complete_card_knowledge"].append(string_dict_1)
+        obs_dict["complete_card_knowledge"].append(string_dict_0)
+    else:
+        obs_dict["card_knowledge"].append(player_0_dict) 
+        obs_dict["card_knowledge"].append(player_1_dict)
+        obs_dict["complete_card_knowledge"].append(string_dict_0)
+        obs_dict["complete_card_knowledge"].append(string_dict_1)
+    
     #obs_dict["vectorized"] = self.observation_encoder.encode(observation)
     #obs_dict["pyhanabi"] = observation
     return obs_dict
