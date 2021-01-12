@@ -1,3 +1,23 @@
+### Note:
+
+[run this version to test how the interface should ideally work]
+- clone the repo
+- run 
+```
+python setup.py install
+```
+- start the backend: 
+```
+BOT=SmartBot python webapp/server.py 
+``` 
+All bots except RandomBot should work well in this branch
+- start the frontend: 
+```
+cd webapp
+npm run install
+npm run start
+```
+
 # Cooperative Search in Hanabi (SPARTA)
 
 This repository implements [Search in Cooperative Partially-Observable Games](https://arxiv.org/abs/1912.02318), presented at AAAI 2020, that can be run on top of either heuristic policies, or RL policies based on the [Simplified Action Decoder](https://arxiv.org/abs/1912.02288) (SAD).
