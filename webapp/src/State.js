@@ -51,7 +51,7 @@ function convertState(schema) {
   schema.otherBots = [];
   if (!schema.isConnected) return {};
   return {
-    isPlayerTurn: schema.isPlayerTurn,
+    isPlayerTurn: true,
     discarded: schema.discards.map(convertCard),
 
     
@@ -70,14 +70,14 @@ function convertState(schema) {
     
     hands: {
       self: new Array(5).fill(1).map((_, idx) => ({
-        id: schema.cardsIds[idx],
+        id: schema.cardIds[idx],
         card: convertCard(schema.cheatMyCards[idx]),
-        hints: schema.predictions[schema.playerId][idx]
+        hints: schema.predictions[0][idx]
       })),
       ["player" + schema.partnerId]: schema.cards.map((card, idx) => ({
-        id: schema.partnerCardsIds[idx],
+        id: schema.partnerCardIds[idx],
         card: convertCard(card),
-        hints: schema.predictions[schema.partnerId][idx]
+        hints: schema.predictions[1][idx]
       }))
     },
     placed: Object.fromEntries(
@@ -92,9 +92,9 @@ function convertState(schema) {
     defuseCounter: schema.mulligansRemaining,
     hintCounter: schema.hintStonesRemaining,
     cardsLeft: schema.cardsRemainingInDeck,
-    gameOver: schema.gameOver,
-    selfId: schema.playerId,
-    partnerId: schema.partnerId,
+    gameOver: false,
+    selfId: 0,
+    partnerId: 1,
     botName: schema.botName,
     otherBots: schema.otherBots,
     seed: schema.seed,

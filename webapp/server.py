@@ -13,7 +13,7 @@ import json
 import sys
 import os
 from gameState import convertGameState
-from action import convertAction
+#from playerAction import convertAction
 from random import randint
 
 from hanabi_lib import start_game, end_game, Move, MoveType, Color, get_botname, get_search_thresh, set_search_thresh

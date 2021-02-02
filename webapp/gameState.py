@@ -1,3 +1,4 @@
+##Converts hle game state to sparta game state
 from hanabi_lib import Color
 import json
 import time

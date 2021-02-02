@@ -7,7 +7,7 @@ import os
 import time
 import os.path
 from reverseGameState import convertGameState
-from action import convertAction
+from playerAction import convertAction
 from random import randint
 
 from hanabi_lib import start_game, end_game, Move, MoveType, Color, get_botname, get_search_thresh, set_search_thresh
@@ -122,7 +122,7 @@ async def ws():
 
         deck = server.getCurrentDeckComposition(-1)
         mapped_deck = { card_repr(card): count for (card, count) in deck.items() }
-
+        """
         state = {
             'cardsRemainingInDeck': server.cardsRemainingInDeck(),
             'cardsRemainingInDeck': 7,
@@ -150,10 +150,15 @@ async def ws():
             'moveHistory': [formatMove(move, player, myNumber) for player, move in bot.move_history_],
             'seed': server.seed
         }
-
-        s2 = convertGameState()
-        print(f"Passed state: {s2}")
-        await websocket.send(json.dumps(s2))      
+        """
+        #TO-DO: add the state reading loop here directly
+        state = convertGameState()
+        state['isPlayerTurn']=server.activePlayer() == myNumber
+        state['gameOver']=server.gameOver()
+        state['playerId']=myNumber
+        state['partnerId']=partnerNumber
+        print(f"Passed state: {state}")
+        await websocket.send(json.dumps(state))      
 
         
         #print(f"Read from file state: {s2}")
@@ -170,17 +175,11 @@ async def ws():
         tokens = action.split(" ")
         print(f"{LOG_PREFIX} ACTION: {action}")
 
-        #a = convertAction()
-        #update save_path to your folder which stores states 
-        #save_path = '/Users/macbookpro/pytorch/HLE/hanabi-ad-hoc-learning/Experiments/SPARTA_Integration/states/'
-        timestr = time.strftime("%Y%m%d-%H%M%S")
-        completeName = os.path.join(timestr + 'action.json')         
+        #convertAction(tokens)
+        #if returned value of function is none keep running it until it finds a action file
+        #function returns none if file not found, if it's found it does the action
+        #separate out player and botaction with logic to see whose turn it is to move
 
-        with open(completeName, 'w') as json_file:
-            json.dump(action, json_file, indent=4)
-        #testing 
-        #print(f"Random Converted Action: {convertAction(randint(0, 19))}")
-        
         try:
             if not bot.ready:
                 print(f"Ignoring move {MoveType} because bot not ready.")
