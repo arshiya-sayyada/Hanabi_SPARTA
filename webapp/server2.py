@@ -12,6 +12,11 @@ from random import randint
 
 from hanabi_lib import start_game, end_game, Move, MoveType, Color, get_botname, get_search_thresh, set_search_thresh
 
+#update save_path to your folder which stores actions 
+actions_path = '/Users/rodrigocanaan/Dev/SpartaIntegrationTest/actions'
+states_path = '/Users/rodrigocanaan/Dev/SpartaIntegrationTest/states'
+
+
 
 sequence = []
 sequence_thresh = []
@@ -175,52 +180,56 @@ async def ws():
         tokens = action.split(" ")
         print(f"{LOG_PREFIX} ACTION: {action}")
 
-        #convertAction(tokens)
+        bot_action = convertAction(tokens,actions_path,states_path) 
+        #in player action
         #if returned value of function is none keep running it until it finds a action file
         #function returns none if file not found, if it's found it does the action
         #separate out player and botaction with logic to see whose turn it is to move
 
-        try:
-            if not bot.ready:
-                print(f"Ignoring move {MoveType} because bot not ready.")
-                continue
 
-            if tokens[0] == "DISCARD":
-                bot.makeMove(Move(MoveType.DISCARD_CARD, int(tokens[1])))
-            elif tokens[0] == "PLACE":
-                bot.makeMove(Move(MoveType.PLAY_CARD, int(tokens[1])))
-            elif tokens[0] == "HINT_COLOR":
-                bot.makeMove(Move(MoveType.HINT_COLOR, int(tokens[1]), int(tokens[2])))
-            elif tokens[0] == "HINT_VALUE":
-                bot.makeMove(Move(MoveType.HINT_VALUE, int(tokens[1]), int(tokens[2])))
-            elif tokens[0] == "REPLAY":
-                print(f"{LOG_PREFIX} FINAL SCORE: {server.currentScore()}")
-                end_game(server, bot, thread)
 
-                if tokens[1] == "-":
-                    server, bot, thread = start_game(next_game_info())
-                else:
-                    server, bot, thread = start_game(next_game_info(), int(tokens[1]))
+# ----------------+==================-------------- #
+        # try:
+        #     if not bot.ready:
+        #         print(f"Ignoring move {MoveType} because bot not ready.")
+        #         continue
 
-                print(f"{LOG_PREFIX} SERVER SEED: {server.seed}")
-                partnerNumber = 1 - server.whoAmI()
-                myNumber = server.whoAmI()
-                await websocket.send(json.dumps({
-                    'type': 'INIT',
-                    'colors': [ Color(i).name for i in range(5) ],
-                    'playerNumber': partnerNumber
-                }))
-                continue
-            else:
-                pass
+        #     if tokens[0] == "DISCARD":
+        #         bot.makeMove(Move(MoveType.DISCARD_CARD, int(tokens[1])))
+        #     elif tokens[0] == "PLACE":
+        #         bot.makeMove(Move(MoveType.PLAY_CARD, int(tokens[1])))
+        #     elif tokens[0] == "HINT_COLOR":
+        #         bot.makeMove(Move(MoveType.HINT_COLOR, int(tokens[1]), int(tokens[2])))
+        #     elif tokens[0] == "HINT_VALUE":
+        #         bot.makeMove(Move(MoveType.HINT_VALUE, int(tokens[1]), int(tokens[2])))
+        #     elif tokens[0] == "REPLAY":
+        #         print(f"{LOG_PREFIX} FINAL SCORE: {server.currentScore()}")
+        #         end_game(server, bot, thread)
 
-        except RuntimeError as e:
-            print(e)
-            flash_message = str(e)
+        #         if tokens[1] == "-":
+        #             server, bot, thread = start_game(next_game_info())
+        #         else:
+        #             server, bot, thread = start_game(next_game_info(), int(tokens[1]))
 
-        if not server.gameOver():
-            #print("BOT SPOTTED at 216")
-            bot.wait()
-            #print(f"HERE:{bot.wait}")
+        #         print(f"{LOG_PREFIX} SERVER SEED: {server.seed}")
+        #         partnerNumber = 1 - server.whoAmI()
+        #         myNumber = server.whoAmI()
+        #         await websocket.send(json.dumps({
+        #             'type': 'INIT',
+        #             'colors': [ Color(i).name for i in range(5) ],
+        #             'playerNumber': partnerNumber
+        #         }))
+        #         continue
+        #     else:
+        #         pass
+
+        # except RuntimeError as e:
+        #     print(e)
+        #     flash_message = str(e)
+
+        # if not server.gameOver():
+        #     #print("BOT SPOTTED at 216")
+        #     bot.wait()
+        #     #print(f"HERE:{bot.wait}")
 
 app.run(host="0.0.0.0", port=5000)
