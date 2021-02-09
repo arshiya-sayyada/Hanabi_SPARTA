@@ -5,28 +5,28 @@ import os.path
 
 def convertAction(action_array,actions_path,states_path):
     if action_array[0] == "DISCARD":
-        a= int(action_array[1])
+        player_action= int(action_array[1])
     elif action_array[0] == "PLACE":
-        a= int(action_array[1])+5
+        player_action= int(action_array[1])+5
     elif action_array[0] == "HINT_COLOR":
-        a= int(action_array[1])+10
+        player_action= int(action_array[1])+10
     elif action_array[0] == "HINT_VALUE":
-        a= int(action_array[1])+14
+        player_action= int(action_array[1])+14
     else:
         print("Invalid Player Action")
-        a=-1
+        player_action=-1
     
-    print("Action as int is " + str(a))
+    print("Action as int is " + str(player_action))
 
 
     #timestr = time.strftime("%Y%m%d-%H%M%S")
     completeName = actions_path + os.path.sep + 'playeraction' + datetime.datetime.now().strftime('%Y%m%d%-H%-M-%S.%f')
 
     with open(completeName, 'w') as json_file:
-        json.dump(a, json_file, indent=4)
+        json.dump(player_action, json_file, indent=4)
         print("File " + completeName + " saved on disk")
 
-    return a
+    return player_action
 
         
     # while True:
