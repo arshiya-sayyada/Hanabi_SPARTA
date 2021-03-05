@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Hanabi User Study</title>
+    <style>
+            body {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                margin-top: 2%;
+                overflow: auto;
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 80%;
+                text-align: center;
+            }
+
+            .hide {
+                display: none;
+            }
+
+            .id_div .terms_and_conditions .rate_skills{
+              width: 100%;
+              padding: 12px 20px;
+              margin: 8px 0;
+              border: 1px solid #ccc;
+              border-radius: 4px;
+            }
+
+            .sec {
+                width: 70%;
+                margin-left: 15%;
+                margin-right: 15%; 
+            }
+
+            input[type=submit] {
+              width: 20%;
+              background-color: #ff7bbb;
+              color: white;
+              padding: 14px 20px;
+              margin: 8px 0;
+              border: none;
+              border-radius: 4px;
+              cursor: pointer;
+              margin-left: 40%;
+              margin-right: 40%;
+            }
+            
+            input[type=submit]:hover {
+              background-color: #fd87c0;
+            }
+            
+            div {
+              border-radius: 5px;
+              background-color: #f2f2f2;
+              padding: 20px;
+            }
+
+            @media screen and (max-width:700px) {
+                .sec {
+                    width: 80%;
+                    margin-left: 5%;
+                    margin-right: 5%; 
+                }                    
+            }
+    </style>
+</head>
+<body>
+    <!--TODO: add action and method properties to form tag to send form data on submit to a db-->
+    <form action="/dir-struct/">
+        <div class="sec id_div">
+            <div class="choice">
+                <label for="id_check">Have you played Hanabi with us before?</label>
+                </br></br>
+                <input type="radio" id="yes" name="id_val" value="yes">
+                <label for="yes" style="margin-right: 5%">Yes</label>
+                <input type="radio" id="no" name="id_val" value="no">
+                <label for="no" style="margin-right: 5%">No</label>
+            </div>
+            <div class="old_usr hide">
+                <label for="id_label">Enter ID:</label>
+                <input type="text" id="id_label" name="id_label">
+            </div>
+            <div class="new_usr hide">
+                <p>This is your ID: <p id="assigned_id"></p>
+                    <br><br>
+                    Remember it for next time!
+                </p>
+            </div>
+        </div>
+        </br>
+
+        <div class="sec rate_skills">
+            <br>
+            <label for="exp">Rate your Hanabi skills on a scale of 1 to 5:</label>
+            </br>
+            <div class="rating">
+                <input type="radio" id="one" name="skills" value="1">
+                <label for="one">1</label>
+                <input type="radio" id="two" name="skills" value="2" style="margin-left: 3vmax">
+                <label for="two">2</label>
+                <input type="radio" id="three" name="skills" value="3" style="margin-left: 3vmax">
+                <label for="three">3</label>
+                <input type="radio" id="four" name="skills" value="4" style="margin-left: 3vmax">
+                <label for="four">4</label>
+                <input type="radio" id="five" name="skills" value="5" style="margin-left: 3vmax">
+                <label for="five">5</label>
+            </div>
+        </div>
+        </br>
+        
+        <!--Change class value to class="sec terms_and_conditions hide" to hide terms and conditions section-->
+        <div class="sec terms_and_conditions">
+        <p style="text-align: justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras id scelerisque massa. Sed quis gravida orci. In rhoncus vestibulum egestas. Donec et ultricies mi, et lobortis velit. In auctor lacinia accumsan. Maecenas finibus posuere neque sed gravida. Maecenas massa est, posuere sit amet vulputate eget, egestas quis massa. Aenean imperdiet sollicitudin finibus. Phasellus vel risus faucibus, viverra ipsum vel, porta neque. Suspendisse tristique ipsum nulla, at gravida sem mollis a. Praesent non urna velit. Pellentesque et nisl mattis, tristique diam eget, imperdiet turpis. Suspendisse felis arcu, facilisis id est et, congue consectetur ipsum. Curabitur pharetra tristique urna, vel rutrum mi dictum nec. Cras purus eros, luctus ac dictum in, venenatis eu lectus.</p>
+        <input type="checkbox" name="terms" value="Yes">
+        <label for="terms">I agree to the above listed terms and conditions</label>
+        <br><br>
+        </div>
+        </br>
+        <!--TODO: Error check for terms==false and any other form elements that are necessary-->        
+        <input type="submit" value="Start Game" >
+      </form>      
+
+      <script>
+        const yes_check = document.getElementById("yes")
+        const no_check = document.getElementById("no")
+        const question = document.querySelector(".choice")
+        const old_user = document.querySelector(".old_usr")
+        const new_user = document.querySelector(".new_usr")
+
+        yes_check.addEventListener('click', () => {
+            question.classList.add('hide')
+            old_user.classList.remove('hide')
+        }) 
+        /*
+        no_check.addEventListener('click', () => {
+            document.getElementById('assigned_id').innerHTML = Math.floor(Math.random() * 1000) + 1; // returns a random integer from 1 to 1000
+            question.classList.add('hide')
+            new_user.classList.remove('hide')
+        }) 
+        */
+      </script>
+
+</body>
+</html>
