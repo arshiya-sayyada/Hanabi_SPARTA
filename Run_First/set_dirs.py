@@ -27,10 +27,23 @@ def dir_struct():
     #if user already has played before and has an id
     if id_check == 'yes':
         idx = request.values.get('id_label')
+
+    #Note: currently there's an error check on form.html so only values greater than 0 can be inputted
     elif id_check == 'no':
-        #TODO: do a check for assigning unique id values
-        idx = random.randint(1, 10000)
-        print('ID assigned: ', idx)
+        sess = os.listdir(logDir)
+        sessNos = []
+        for i in sess:
+            temp = re.findall(r'\d+', i)
+            sessNos.append(list(map(int, temp)))
+        sessDone = [item for sublist in sessNos for item in sublist]
+        sessDone.sort()
+        if len(sessDone) == 0:
+            idx = 1
+        else: 
+            print('last id assigned: ', sessDone[-1])
+            idx = sessDone[-1] + 1
+        #idx = random.randint(1, 10000)
+        print('New ID assigned: ', idx)
         
     sessDir = str(logDir) + '/' + 'Session' + str(idx)
     if not os.path.exists(sessDir):
@@ -103,7 +116,7 @@ def dir_struct():
     #BOT=RandomBot python server2.py
     #-> in a new tab
     #run java process
-    return redirect("http://localhost:3000/", code=302)
+    return redirect("http://localhost:3003/", code=302)
 
 
 if __name__ == '__main__':

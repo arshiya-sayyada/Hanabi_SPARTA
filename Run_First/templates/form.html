@@ -69,21 +69,23 @@
     </style>
 </head>
 <body>
-    <!--TODO: add action and method properties to form tag to send form data on submit to a db-->
     <form action="/dir-struct/">
         <div class="sec id_div">
             <div class="choice">
                 <label for="id_check">Have you played Hanabi with us before?</label>
                 </br></br>
-                <input type="radio" id="yes" name="id_val" value="yes">
+                <input type="radio" id="yes" name="id_val" value="yes" required>
                 <label for="yes" style="margin-right: 5%">Yes</label>
-                <input type="radio" id="no" name="id_val" value="no">
+                <input type="radio" id="no" name="id_val" value="no" required>
                 <label for="no" style="margin-right: 5%">No</label>
             </div>
             <div class="old_usr hide">
                 <label for="id_label">Enter ID:</label>
-                <input type="text" id="id_label" name="id_label">
+                <input type="number" id="id_label" name="id_label" min="1">
+                <p id="wrong_inp"></p>
             </div>
+            
+            <!--Note: The below div is not currently being used to display id value as we are generating it on the python end-->
             <div class="new_usr hide">
                 <p>This is your ID: <p id="assigned_id"></p>
                     <br><br>
@@ -98,15 +100,15 @@
             <label for="exp">Rate your Hanabi skills on a scale of 1 to 5:</label>
             </br>
             <div class="rating">
-                <input type="radio" id="one" name="skills" value="1">
+                <input type="radio" id="one" name="skills" value="1" >
                 <label for="one">1</label>
-                <input type="radio" id="two" name="skills" value="2" style="margin-left: 3vmax">
+                <input type="radio" id="two" name="skills" value="2" style="margin-left: 3vmax" >
                 <label for="two">2</label>
-                <input type="radio" id="three" name="skills" value="3" style="margin-left: 3vmax">
+                <input type="radio" id="three" name="skills" value="3" style="margin-left: 3vmax" >
                 <label for="three">3</label>
-                <input type="radio" id="four" name="skills" value="4" style="margin-left: 3vmax">
+                <input type="radio" id="four" name="skills" value="4" style="margin-left: 3vmax" >
                 <label for="four">4</label>
-                <input type="radio" id="five" name="skills" value="5" style="margin-left: 3vmax">
+                <input type="radio" id="five" name="skills" value="5" style="margin-left: 3vmax" >
                 <label for="five">5</label>
             </div>
         </div>
@@ -115,12 +117,11 @@
         <!--Change class value to class="sec terms_and_conditions hide" to hide terms and conditions section-->
         <div class="sec terms_and_conditions">
         <p style="text-align: justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras id scelerisque massa. Sed quis gravida orci. In rhoncus vestibulum egestas. Donec et ultricies mi, et lobortis velit. In auctor lacinia accumsan. Maecenas finibus posuere neque sed gravida. Maecenas massa est, posuere sit amet vulputate eget, egestas quis massa. Aenean imperdiet sollicitudin finibus. Phasellus vel risus faucibus, viverra ipsum vel, porta neque. Suspendisse tristique ipsum nulla, at gravida sem mollis a. Praesent non urna velit. Pellentesque et nisl mattis, tristique diam eget, imperdiet turpis. Suspendisse felis arcu, facilisis id est et, congue consectetur ipsum. Curabitur pharetra tristique urna, vel rutrum mi dictum nec. Cras purus eros, luctus ac dictum in, venenatis eu lectus.</p>
-        <input type="checkbox" name="terms" value="Yes">
+        <input type="checkbox" name="terms" value="Yes" required>
         <label for="terms">I agree to the above listed terms and conditions</label>
         <br><br>
         </div>
-        </br>
-        <!--TODO: Error check for terms==false and any other form elements that are necessary-->        
+        </br>     
         <input type="submit" value="Start Game" >
       </form>      
 
@@ -130,18 +131,29 @@
         const question = document.querySelector(".choice")
         const old_user = document.querySelector(".old_usr")
         const new_user = document.querySelector(".new_usr")
+        const exper = document.querySelector(".rate_skills")
 
         yes_check.addEventListener('click', () => {
             question.classList.add('hide')
+            exper.classList.add('hide')
             old_user.classList.remove('hide')
+            document.getElementById("id_label").required = true
+            var inpObj = document.getElementById("id_label");
+            
+            if (!inpObj.checkValidity()) {
+                document.getElementById("wrong_inp").innerHTML = inpObj.validationMessage;
+            }
         }) 
-        /*
+        
         no_check.addEventListener('click', () => {
+            document.querySelector('input[name="skills"]').required = true
+            /*
             document.getElementById('assigned_id').innerHTML = Math.floor(Math.random() * 1000) + 1; // returns a random integer from 1 to 1000
             question.classList.add('hide')
             new_user.classList.remove('hide')
+            */
         }) 
-        */
+        
       </script>
 
 </body>
